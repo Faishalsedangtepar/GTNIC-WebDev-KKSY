@@ -1,7 +1,7 @@
 name: build-and-push
 on:
   push:
-    branches: [main]
+    branches: [Development]
 
 jobs:
   build:
@@ -20,4 +20,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}:latest
+          tags: ghcr.io/faishalsedangtepar/gtnic-webdev-ksy:latest
