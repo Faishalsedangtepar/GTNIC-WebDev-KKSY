@@ -3,6 +3,7 @@
 use App\Http\Controllers\DbTestController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request; 
 
 Route::get('/db-test', [DbTestController::class, 'index']);
 Route::post('/db-test/run', [DbTestController::class, 'run']);
@@ -14,9 +15,52 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [LoginController::class, 'login']);
 });
 
+
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    // sementara: semua role masuk ke halaman admin dulu untuk tes
-    Route::get('/dashboard', fn () => view('admin.admin'))->name('dashboard');
+    Route::get('/dashboard', function (Request $request) {
+        return match ($request->user()->role) {
+            'admin'  => redirect()->route('admin.dashboard'),
+            'kasir'  => redirect()->route('kasir.dashboard'),
+            'gudang' => redirect()->route('stok.dashboard'),
+            default  => abort(403, 'Role tidak dikenali.'),
+        };
+    })->name('dashboard');
+
+    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::view('/dashboard', 'admin.admin')->name('dashboard');
+    });
+
+    Route::middleware('role:kasir')->prefix('kasir')->name('kasir.')->group(function () {
+        Route::view('/dashboard', 'kasir.kasir')->name('dashboard');
+    });
+
+    Route::middleware('role:gudang,admin')->prefix('stok')->name('stok.')->group(function () {
+        Route::view('/dashboard', 'stok.stok')->name('dashboard');
+    });
+});
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+    Route::get('/dashboard', function (Request $request) {
+        return match ($request->user()->role) {
+            'admin'  => redirect()->route('admin.dashboard'),
+            'kasir'  => redirect()->route('kasir.dashboard'),
+            'gudang' => redirect()->route('stok.dashboard'),
+            default  => abort(403, 'Role tidak dikenali.'),
+        };
+    })->name('dashboard');
+
+    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::view('/dashboard', 'admin.admin')->name('dashboard');
+    });
+
+    Route::middleware('role:kasir')->prefix('kasir')->name('kasir.')->group(function () {
+        Route::view('/dashboard', 'kasir.kasir')->name('dashboard');
+    });
+
+    Route::middleware('role:gudang,admin')->prefix('stok')->name('stok.')->group(function () {
+        Route::view('/dashboard', 'stok.stok')->name('dashboard');
+    });
 });
