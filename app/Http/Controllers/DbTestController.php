@@ -8,14 +8,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Throwable;
 
-/**
- * Halaman tes koneksi & skema database (Supabase/PostgreSQL).
- * Hanya aktif saat APP_ENV=local. Hapus file ini sebelum deploy.
- */
 class DbTestController extends Controller
 {
     private const TABLES = ['pengguna', 'satuan', 'kategori_produk', 'produk', 'nota', 'nota_item', 'keranjang_item'];
-    private const VIEWS  = ['v_produk', 'v_keranjang'];
+    private const VIEWS  = ['v_produk', 'v_keranjang', 'v_laporan_bulanan'];
 
     private function guard(): void
     {

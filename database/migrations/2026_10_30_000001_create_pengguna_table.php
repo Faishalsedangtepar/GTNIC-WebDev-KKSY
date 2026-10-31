@@ -13,7 +13,7 @@ return new class extends Migration
             $t->id();
             $t->string('username', 50)->unique();
             $t->text('password_hash');
-            $t->enum('role', ['kasir', 'admin', 'gudang']);   // AuthorizeType
+            $t->enum('role', ['kasir', 'admin']);   // AuthorizeType
         });
     }
 

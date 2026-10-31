@@ -9,7 +9,6 @@ return new class extends Migration
 {
     public function up(): void
     {
-        // Layar Produk. Search: WHERE nama ILIKE '%x%'. Filter: WHERE kategori = 'Semen'
         DB::statement("
             CREATE VIEW v_produk AS
             SELECT p.id, p.nama, k.nama AS kategori, s.nama AS satuan,
@@ -19,7 +18,6 @@ return new class extends Migration
             JOIN satuan s          ON s.id = p.satuan_id
         ");
 
-        // Total Harga = Harga x Kuantitas
         DB::statement("
             CREATE VIEW v_keranjang AS
             SELECT ki.id AS item_id, p.id AS produk_id, p.nama,

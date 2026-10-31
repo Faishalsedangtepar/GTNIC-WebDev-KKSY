@@ -2,24 +2,28 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Pengguna;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $akun = [
+            ['admin', 'admin', env('SEED_ADMIN_PASSWORD')],
+            ['kasir', 'kasir', env('SEED_KASIR_PASSWORD')],
+        ];
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        foreach ($akun as [$username, $role, $password]) {
+            if (! $password) {
+                throw new \RuntimeException("SEED_" . strtoupper($role) . "_PASSWORD belum diisi di .env");
+            }
+
+            Pengguna::updateOrCreate(
+                ['username' => $username],
+                ['password_hash' => Hash::make($password), 'role' => $role],
+            );
+        }
     }
 }
